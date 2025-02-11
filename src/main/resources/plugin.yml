@@ -1,0 +1,6 @@
+name: Cornica
+version: '1.0-SNAPSHOT'
+main: org.example.cornica.cornica.Cornica
+api-version: '1.21'
+authors: [ ShortPupper14484 ]
+description: cornica is a plugin inteaded for a friends minecraft server
