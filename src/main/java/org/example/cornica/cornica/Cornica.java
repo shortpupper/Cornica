@@ -26,24 +26,24 @@ public final class Cornica extends JavaPlugin {
         LiteralCommandNode<CommandSourceStack> rootsOfCornica = Commands.literal("cornica")
                 .then(Commands.literal("testing")
                         .then(Commands.literal("iscanthavebukkit")
-                            .then(Commands.argument("allow", BoolArgumentType.bool())
-                                    .executes(ctx -> {
-                                        boolean allowed = ctx.getArgument("allow", boolean.class);
-                                        CommandSender sender = ctx.getSource().getSender(); // Retrieve the command sender
+                                .then(Commands.argument("allow", BoolArgumentType.bool())
+                                        .executes(ctx -> {
+                                            boolean allowed = ctx.getArgument("allow", boolean.class);
+                                            CommandSender sender = ctx.getSource().getSender(); // Retrieve the command sender
 
-                                        // Check whether the executor is a player, as you can only set a player's flight speed
-                                        if (allowed) {
-                                            // If a non-player tried to set their own flight speed
-                                            sender.sendPlainMessage("No");
-                                        } else if (!allowed) {
-                                            sender.sendPlainMessage("NOOOOOO");
+                                            // Check whether the executor is a player, as you can only set a player's flight speed
+                                            if (allowed) {
+                                                // If a non-player tried to set their own flight speed
+                                                sender.sendPlainMessage("No");
+                                            } else {
+                                                sender.sendPlainMessage("NOOOOOO");
+                                            }
+
+                                            /* Here we are on /plant tree */
+                                            return Command.SINGLE_SUCCESS;
                                         }
-
-                                        /* Here we are on /plant tree */
-                                        return Command.SINGLE_SUCCESS;
-                                    }
+                                    )
                                 )
-                            )
                         )
                         .then(Commands.literal("flyspeed")
                                 .then(Commands.argument("speed", FloatArgumentType.floatArg(0, 1.0f))
@@ -75,6 +75,23 @@ public final class Cornica extends JavaPlugin {
                                         })
                                 )
                         )
+                        .then(Commands.literal("permission")
+                                .then(Commands.literal("test")
+                                        .requires(sender -> sender.getSender().hasPermission("permission.test"))
+                                        .executes(ctx -> {
+                                            ctx.getSource().getSender().sendRichMessage("<gold>You have permission to run this command!");
+                                            return Command.SINGLE_SUCCESS;
+                                        })
+                                )
+                                .then(Commands.literal("op")
+                                        .requires(sender -> sender.getSender().isOp())
+                                        .executes(ctx -> {
+                                            ctx.getSource().getSender().sendRichMessage("<gold>You are a server operator!");
+                                            return Command.SINGLE_SUCCESS;
+                                        })
+                                )
+                        )
+
                 ).build();
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
