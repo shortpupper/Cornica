@@ -1,5 +1,5 @@
 name: Cornica
-version: '1.0-SNAPSHOT'
+version: '0.3-SNAPSHOT'
 main: org.example.cornica.cornica.Cornica
 api-version: '1.21'
 authors: [ ShortPupper14484 ]
