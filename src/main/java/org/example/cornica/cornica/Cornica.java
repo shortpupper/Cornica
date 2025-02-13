@@ -150,6 +150,6 @@ public final class Cornica extends JavaPlugin {
     public void onDisable() {
 
         // Plugin shutdown logic
-        getLogger().fine("Bye~!");
+        getLogger().info("Bye~!");
     }
 }
