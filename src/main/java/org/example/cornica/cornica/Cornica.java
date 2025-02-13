@@ -3,13 +3,11 @@ package org.example.cornica.cornica;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -17,14 +15,16 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemType;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.function.Supplier;
-
 public final class Cornica extends JavaPlugin {
+    public static boolean CHANGECHAT = false;
 
     @Override
     public void onEnable() {
         // Plugin startup logic
+        getLogger().info("Loading ChatListener");
+        new ChatListeners(this);
 
+        getLogger().info("Loading commands");
         LiteralCommandNode<CommandSourceStack> rootsOfCornica = Commands.literal("cornica")
                 .then(Commands.literal("testing")
                         .then(Commands.literal("iscanthavebukkit")
@@ -102,6 +102,39 @@ public final class Cornica extends JavaPlugin {
                                             return Command.SINGLE_SUCCESS;
                                         })
                                 )
+                                .then(Commands.literal("reloadcommands")
+                                        .executes(ctx -> {
+                                            if (ctx.getSource().getExecutor() instanceof Player player) {
+                                                player.updateCommands();
+                                                player.sendRichMessage("<gold>Successfully updated your commands!");
+                                            }
+
+                                            return Command.SINGLE_SUCCESS;
+                                        })
+                                )
+                        )
+                        .then(Commands.literal("changeChat")
+                            .then(Commands.argument("change", BoolArgumentType.bool())
+                                    .executes(ctx -> {
+                                        boolean allowed = ctx.getArgument("change", boolean.class);
+                                        CommandSender sender = ctx.getSource().getSender(); // Retrieve the command sender
+
+                                        if (allowed) {
+                                            CHANGECHAT = true;
+                                            sender.sendPlainMessage("Changed to true");
+
+
+
+                                            return Command.SINGLE_SUCCESS;
+                                        }
+
+                                        sender.sendPlainMessage("Changed to false");
+                                        CHANGECHAT = false;
+
+
+                                        return Command.SINGLE_SUCCESS;
+                                    })
+                            )
                         )
 
                 ).build();
