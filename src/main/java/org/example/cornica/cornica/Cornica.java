@@ -10,9 +10,11 @@ import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.function.Supplier;
@@ -87,6 +89,16 @@ public final class Cornica extends JavaPlugin {
                                         .requires(sender -> sender.getSender().isOp())
                                         .executes(ctx -> {
                                             ctx.getSource().getSender().sendRichMessage("<gold>You are a server operator!");
+                                            return Command.SINGLE_SUCCESS;
+                                        })
+                                )
+                                .then(Commands.literal("givesword")
+                                        .requires(sender -> sender.getExecutor() instanceof Player player && !player.getInventory().contains(Material.DIAMOND_SWORD))
+                                        .executes(ctx -> {
+                                            if (ctx.getSource().getExecutor() instanceof Player player) {
+                                                player.getInventory().addItem(ItemType.DIAMOND_SWORD.createItemStack());
+                                            }
+
                                             return Command.SINGLE_SUCCESS;
                                         })
                                 )
